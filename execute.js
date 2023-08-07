@@ -11,16 +11,23 @@ const PORT = process.env.PORT;
 
 app.use(fileUpload());
 
-app.post('/', (req, res) => {
+app.get('/', (req, res) => {
+  res.send("Working")
+})
+
+app.post('/execute', (req, res) => {
   const cppCode = req.files.file.data;
   fs.writeFileSync('test.cpp', cppCode)
-  res.send("error")
   exec(`g++ -o test test.cpp`, (error, stdout, stderr) => {
     if (error) {
       res.send(`${stderr}`);
     } else {
       exec('./test', (error, stdout, stderr) => {
-        res.send(`${stdout}`);
+        if(error) {
+          res.send(`${stderr}`)
+        } else {
+          res.send(`${stdout}`);
+        }
       })
     }
   });

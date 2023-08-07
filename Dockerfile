@@ -1,2 +1,7 @@
 FROM node:20-alpine
-EXPOSE 8080
+RUN apk update && apk add --no-cache g++
+WORKDIR /app
+COPY package.json .env /app/
+RUN npm install
+COPY execute.js /app/
+CMD ["node", "execute.js"]
